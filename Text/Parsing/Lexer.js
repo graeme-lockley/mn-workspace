@@ -44,7 +44,6 @@ TokenState.prototype.next = function () {
 };
 
 
-
 function isEndOfFile(index, input) {
     return index >= input.length;
 }
@@ -76,22 +75,17 @@ function matchRegex(regex, state) {
 
 
 function advanceState(currentState, matchedText, matchedToken) {
-    let index = currentState.index;
-    let position = currentState.position;
-
-    for (let matchedTextIndex = 0; matchedTextIndex < matchedText.length; matchedTextIndex += 1) {
-        index += 1;
-        if (matchedText.charCodeAt(matchedTextIndex) === 10) {
-            position = position.mapFirst(x => 1).mapSecond(y => y + 1);
-        } else {
-            position = position.mapFirst(x => x + 1);
-        }
-    }
+    const advancedIndex = currentState.index + matchedText.length;
+    const advancePositionOnCharacter = position => item =>
+        item.charCodeAt(0) === 10
+            ? Tuple(1, position.second + 1)
+            : position.mapFirst(x => x + 1);
+    const advancedPosition = matchedText.foldl(currentState.position)(advancePositionOnCharacter);
 
     return {
         input: currentState.input,
-        index: index,
-        position: position,
+        index: advancedIndex,
+        position: advancedPosition,
         token: matchedToken,
         oldPosition: currentState.position,
         oldIndex: currentState.index
