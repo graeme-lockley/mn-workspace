@@ -51,12 +51,7 @@ function isEndOfFile(index, input) {
 
 function skipWhitespace(whitespaceRegex, state) {
     if (whitespaceRegex) {
-        const matchedRegex = matchRegex(whitespaceRegex, state);
-        if (matchedRegex) {
-            return advanceState(state, matchedRegex);
-        } else {
-            return state;
-        }
+        return matchRegex(whitespaceRegex, state).map(text => advanceState(state, text)).withDefault(state);
     } else {
         return state;
     }
@@ -67,9 +62,9 @@ function matchRegex(regex, state) {
     regex.lastIndex = state.index;
     const matchedRegex = regex.exec(state.input);
     if (matchedRegex) {
-        return matchedRegex[0];
+        return Maybe.Just(matchedRegex[0]);
     } else {
-        return undefined;
+        return Maybe.Nothing;
     }
 }
 
