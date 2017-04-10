@@ -21,14 +21,14 @@ Test.newSuite("Lexer Suite")
         const lexerDefinition = Lexer.setup({
             eof: {id: 0},
             tokenPatterns: [
-                Tuple(/[0-9]+/iy, text => ({id: 1, value: Int.fromString(text).withDefault(0)}))
-            ]
+                Tuple(/[0-9]+/iy)(text => ({id: 1, value: Int.fromString(text).withDefault(0)}))
+            ].toArray()
         });
         const lexer = lexerDefinition.fromString("2912 hello");
 
         Assert.equal(lexer.token().id, 1);
         Assert.equal(lexer.token().value, 2912);
-        Assert.deepEqual(lexer.position(), Tuple(1, 0));
+        Assert.deepEqual(lexer.position(), Tuple(1)(0));
         Assert.equal(lexer.index(), 0);
     })
 
@@ -37,21 +37,21 @@ Test.newSuite("Lexer Suite")
             eof: {id: 0},
             whitespacePattern: /\s*/iy,
             tokenPatterns: [
-                Tuple(/[0-9]+/iy, text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
-                Tuple(/[A-Za-z_][A-Za-z0-9_]*/iy, text => ({id: 2, value: text}))
-            ]
+                Tuple(/[0-9]+/iy)(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
+                Tuple(/[A-Za-z_][A-Za-z0-9_]*/iy)(text => ({id: 2, value: text}))
+            ].toArray()
         });
         const lexer = lexerDefinition.fromString("2912 hello");
 
         Assert.equal(lexer.token().id, 1);
         Assert.equal(lexer.token().value, 2912);
-        Assert.deepEqual(lexer.position(), Tuple(1, 0));
+        Assert.deepEqual(lexer.position(), Tuple(1)(0));
         Assert.equal(lexer.index(), 0);
 
         const nextLexer = lexer.next();
 
         Assert.equal(nextLexer.token().id, 2);
         Assert.equal(nextLexer.token().value, "hello");
-        Assert.deepEqual(nextLexer.position(), Tuple(6, 0));
+        Assert.deepEqual(nextLexer.position(), Tuple(6)(0));
         Assert.equal(nextLexer.index(), 5);
     });

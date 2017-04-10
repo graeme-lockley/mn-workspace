@@ -24,37 +24,28 @@ TokenState.prototype.index = function () {
 
 
 TokenState.prototype.next = function () {
-    if (isEndOfFile(this.state.index, this.state.input)) {
+    if (isEndOfFile(this.state.index)(this.state.input)) {
         return new TokenState(this.configuration, finalState(this.configuration.eof, this.state));
     } else {
-        const currentState = skipWhitespace(this.configuration.whitespacePattern, this.state);
+        const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
+        const mapTokenPattern = tokenPattern =>
+            matchRegex(tokenPattern.first, currentState).map(text => advanceState(currentState, text, tokenPattern.second(text)));
 
-        for (const tokenPatternIndex in this.configuration.tokenPatterns) {
-            const tokenPattern = this.configuration.tokenPatterns[tokenPatternIndex];
-            tokenPattern.first.lastIndex = currentState.index;
-            const regexResult = tokenPattern.first.exec(currentState.input);
-
-            if (regexResult) {
-                return new TokenState(this.configuration, advanceState(currentState, regexResult[0], tokenPattern.second(regexResult[0])));
-            }
-        }
-
-        return this.configuration.error;
+        return new TokenState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(undefined));
     }
 };
 
 
-function isEndOfFile(index, input) {
-    return index >= input.length;
+function isEndOfFile(index) {
+    return input => index >= input.length;
 }
 
 
-function skipWhitespace(whitespaceRegex, state) {
-    if (whitespaceRegex) {
-        return matchRegex(whitespaceRegex, state).map(text => advanceState(state, text)).withDefault(state);
-    } else {
-        return state;
-    }
+function skipWhitespace(whitespaceRegex) {
+    return state =>
+        whitespaceRegex
+            ? matchRegex(whitespaceRegex, state).map(text => advanceState(state, text)).withDefault(state)
+            : state;
 }
 
 
@@ -73,7 +64,7 @@ function advanceState(currentState, matchedText, matchedToken) {
     const advancedIndex = currentState.index + matchedText.length;
     const advancePositionOnCharacter = position => item =>
         item.charCodeAt(0) === 10
-            ? Tuple(1, position.second + 1)
+            ? Tuple(1)(position.second + 1)
             : position.mapFirst(x => x + 1);
     const advancedPosition = matchedText.foldl(currentState.position)(advancePositionOnCharacter);
 
@@ -91,7 +82,7 @@ function advanceState(currentState, matchedText, matchedToken) {
 function initialState(input) {
     return {
         input: input,
-        position: Tuple(1, 0),
+        position: Tuple(1)(0),
         index: 0
     };
 }
