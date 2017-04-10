@@ -46,7 +46,7 @@ function newSuite(name) {
 
 
 process.on('exit', function () {
-    for (let i in suites) {
+    for (let i = 0; i < suites.length; i += 1) {
         const suite = suites[i];
         console.log(`${suite.name}: ${suite.success}/${suite.total}`);
     }
