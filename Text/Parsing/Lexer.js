@@ -8,6 +8,18 @@ function LexerState(configuration, state) {
 }
 
 
+function mkRunningState(input, index, position, token, oldPosition, oldIndex) {
+    return {
+        input: input,
+        index: index,
+        position: position,
+        token: token,
+        oldPosition: oldPosition,
+        oldIndex: oldIndex
+    };
+}
+
+
 LexerState.prototype.token = function () {
     return this.state.token;
 };
@@ -25,7 +37,7 @@ LexerState.prototype.index = function () {
 
 LexerState.prototype.next = function () {
     if (isEndOfFile(this.state.index)(this.state.input)) {
-        return new LexerState(this.configuration, finalState(this.configuration.eof, this.state));
+        return new LexerState(this.configuration, finalState(this.configuration, this.state));
     } else {
         const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
         const mapTokenPattern = tokenPattern =>
@@ -68,41 +80,43 @@ function advanceState(currentState, matchedText, matchedToken) {
             : position.mapFirst(x => x + 1);
     const advancedPosition = matchedText.foldl(currentState.position)(advancePositionOnCharacter);
 
-    return {
-        input: currentState.input,
-        index: advancedIndex,
-        position: advancedPosition,
-        token: matchedToken,
-        oldPosition: currentState.position,
-        oldIndex: currentState.index
-    };
+    return mkRunningState(
+        currentState.input,
+        advancedIndex,
+        advancedPosition,
+        matchedToken,
+        currentState.position,
+        currentState.index);
 }
 
 
-function initialState(input) {
-    return {
-        input: input,
-        position: Tuple(1)(0),
-        index: 0
-    };
+function initialState(configuration, input) {
+    return mkRunningState(
+        input,
+        0,
+        Tuple(1)(0),
+        configuration.eof,
+        Tuple(1)(0),
+        0);
 }
-assumption(initialState("Hello world").input === "Hello world" && initialState("Hello world").index === 0);
 
 
-function finalState(eofToken, state) {
-    return {
-        input: state.input,
-        position: state.position,
-        index: state.input.length,
-        token: eofToken
-    };
+function finalState(configuration, state) {
+    return mkRunningState (
+        state.input,
+        state.input.length,
+        state.position,
+        configuration.eof,
+        state.oldPosition,
+        state.oldIndex
+    );
 }
 
 
 function setup(configuration) {
     return {
         fromString: function (input) {
-            return new LexerState(configuration, initialState(input)).next();
+            return new LexerState(configuration, initialState(configuration, input)).next();
         }
     };
 }
