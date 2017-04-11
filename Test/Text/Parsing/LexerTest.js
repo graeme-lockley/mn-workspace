@@ -61,6 +61,14 @@ Test.newSuite("Lexer Suite")
         assertLexerState(
             lexer.next().next(),
             2, "hello", Tuple(6)(0), 5);
+    })
+
+    .case("given a lexer with an input of only whitespace", () => {
+        const lexer = lexerDefinition.fromString("   ");
+
+        assertLexerState(
+            lexer,
+            0, "", Tuple(4)(0), 3);
     });
 
 

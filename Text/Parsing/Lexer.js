@@ -36,10 +36,10 @@ LexerState.prototype.index = function () {
 
 
 LexerState.prototype.next = function () {
-    if (isEndOfFile(this.state.index)(this.state.input)) {
-        return new LexerState(this.configuration, finalState(this.configuration, this.state));
+    const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
+    if (isEndOfFile(currentState.index)(currentState.input)) {
+        return new LexerState(this.configuration, finalState(this.configuration, currentState));
     } else {
-        const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
         const errorState = advanceState(currentState, currentState.input[currentState.index], this.configuration.err(currentState.input[currentState.index]));
         const mapTokenPattern = tokenPattern =>
             matchRegex(tokenPattern.first, currentState).map(text => advanceState(currentState, text, tokenPattern.second(text)));
@@ -103,13 +103,13 @@ function initialState(configuration, input) {
 
 
 function finalState(configuration, state) {
-    return mkRunningState (
+    return mkRunningState(
         state.input,
         state.input.length,
         state.position,
         configuration.eof,
-        state.oldPosition,
-        state.oldIndex
+        state.position,
+        state.input.length
     );
 }
 
