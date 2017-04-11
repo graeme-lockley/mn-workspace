@@ -40,10 +40,11 @@ LexerState.prototype.next = function () {
         return new LexerState(this.configuration, finalState(this.configuration, this.state));
     } else {
         const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
+        const errorState = advanceState(currentState, currentState.input[currentState.index], this.configuration.err(currentState.input[currentState.index]));
         const mapTokenPattern = tokenPattern =>
             matchRegex(tokenPattern.first, currentState).map(text => advanceState(currentState, text, tokenPattern.second(text)));
 
-        return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(undefined));
+        return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(errorState));
     }
 };
 
