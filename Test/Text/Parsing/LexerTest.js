@@ -47,7 +47,7 @@ Test.newSuite("Lexer Suite")
             2, "hello", Tuple(6)(0), 5);
     })
 
-    .case("given a lexer with an character that the lexer does not recognise then the error token is returned and the lexer is advanced onto the next character", () => {
+    .case("given a lexer with a character that the lexer does not recognise then the error token is returned and the lexer is advanced onto the next character", () => {
         const lexer = lexerDefinition.fromString("2912*hello");
 
         assertLexerState(
