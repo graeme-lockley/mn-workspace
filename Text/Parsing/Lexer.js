@@ -2,36 +2,36 @@ const Maybe = mrequire("core:lang.Maybe:v1.0.0");
 const Tuple = require("../../Data/Tuple");
 
 
-function TokenState(configuration, state) {
+function LexerState(configuration, state) {
     this.configuration = configuration;
     this.state = state;
 }
 
 
-TokenState.prototype.token = function () {
+LexerState.prototype.token = function () {
     return this.state.token;
 };
 
 
-TokenState.prototype.position = function () {
+LexerState.prototype.position = function () {
     return this.state.oldPosition;
 };
 
 
-TokenState.prototype.index = function () {
+LexerState.prototype.index = function () {
     return this.state.oldIndex;
 };
 
 
-TokenState.prototype.next = function () {
+LexerState.prototype.next = function () {
     if (isEndOfFile(this.state.index)(this.state.input)) {
-        return new TokenState(this.configuration, finalState(this.configuration.eof, this.state));
+        return new LexerState(this.configuration, finalState(this.configuration.eof, this.state));
     } else {
         const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
         const mapTokenPattern = tokenPattern =>
             matchRegex(tokenPattern.first, currentState).map(text => advanceState(currentState, text, tokenPattern.second(text)));
 
-        return new TokenState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(undefined));
+        return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(undefined));
     }
 };
 
@@ -102,7 +102,7 @@ function finalState(eofToken, state) {
 function setup(configuration) {
     return {
         fromString: function (input) {
-            return new TokenState(configuration, initialState(input)).next();
+            return new LexerState(configuration, initialState(input)).next();
         }
     };
 }
