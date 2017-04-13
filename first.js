@@ -1,4 +1,4 @@
-const Result = require("./lib/Result");
+const Result = require("./Data/Result");
 const Maybe = mrequire("core:lang.Maybe:v1.0.0");
 
 const Second = require("./second");

@@ -1,3 +1,3 @@
-const Result = require("./lib/Result");
+const Result = require("./Data/Result");
 
 module.exports = Result;
