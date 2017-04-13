@@ -1,5 +1,6 @@
 const Test = require("./../../Unit");
 
+const Array = require("../../../Data/Array");
 const Int = require("../../../Data/Int");
 const Tuple = require("../../../Data/Tuple");
 
@@ -12,11 +13,13 @@ const lexerDefinition = Lexer.setup({
     eof: {id: 0, value: ""},
     err: text => ({id: -1, value: text}),
     whitespacePattern: /\s*/iy,
-    tokenPatterns: [
-        Tuple(/[0-9]+/iy)(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
-        Tuple(/[A-Za-z_][A-Za-z0-9_]*/iy)(text => ({id: 2, value: text}))
-    ].toArray()
-});
+    tokenPatterns:
+        Array.from([
+            Tuple(/[0-9]+/iy)(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
+            Tuple(/[A-Za-z_][A-Za-z0-9_]*/iy)(text => ({id: 2, value: text}))
+    ])
+})
+;
 
 Test.newSuite("Lexer Suite")
     .case("given an empty lexer should be at EOF", () => {

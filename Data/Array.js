@@ -6,21 +6,21 @@ function ImmutableArray(content) {
 }
 
 
-function fromArray(content) {
-	return new ImmutableArray(content);
-}
-
-
 ImmutableArray.prototype.length = function() {
 	return this.content.length;
 };
-assumption(fromArray([1, 2, 3, 4]).length() === 4);
 
 
-Array.prototype.toArray = function() {
-    return fromArray(this);
-};
-assumption([1, 2, 3, 4, 5].toArray().length() === 5);
+function from(content) {
+    return new ImmutableArray(content);
+}
+assumption(from([1, 2, 3, 4]).length() === 4);
+
+
+function singleton(content) {
+    return from([content]);
+}
+assumption(singleton(1).length() === 1);
 
 
 //- Try to find an element in a data structure which satisfies a predicate mapping.
@@ -39,10 +39,11 @@ ImmutableArray.prototype.findMap = function(f) {
 
     return Maybe.Nothing;
 };
-assumption([1, 2, 3, 4, 5].toArray().findMap(n => n === 3 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 9);
-assumption([1, 2, 3, 4, 5].toArray().findMap(n => n === 10 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 0);
+assumption(from([1, 2, 3, 4, 5]).findMap(n => n === 3 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 9);
+assumption(from([1, 2, 3, 4, 5]).findMap(n => n === 10 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 0);
 
 
 module.exports = {
-	fromArray
+	from,
+    singleton
 };
