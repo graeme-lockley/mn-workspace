@@ -1,4 +1,5 @@
 const Maybe = mrequire("core:lang.Maybe:v1.0.0");
+const String = require("../../Data/String");
 const Tuple = require("../../Data/Tuple");
 
 
@@ -79,7 +80,7 @@ function advanceState(currentState, matchedText, matchedToken) {
         item.charCodeAt(0) === 10
             ? Tuple(1)(position.second + 1)
             : position.mapFirst(x => x + 1);
-    const advancedPosition = matchedText.foldl(currentState.position)(advancePositionOnCharacter);
+    const advancedPosition = String.foldl(matchedText)(currentState.position)(advancePositionOnCharacter);
 
     return mkRunningState(
         currentState.input,

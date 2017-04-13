@@ -1,11 +1,16 @@
-String.prototype.foldl = function (z) {
-    return f => {
+function foldl(string) {
+    return z => f => {
         let result = z;
-        for (let i = 0; i < this.length; i += 1) {
-            result = f(result)(this[i]);
+        for (let i = 0; i < string.length; i += 1) {
+            result = f(result)(string[i]);
         }
 
         return result;
     }
+}
+assumption(foldl("Hello")(0)(a => b => a + 1) === 5);
+
+
+module.exports = {
+    foldl
 };
-assumption("Hello".foldl(0)(a => b => a + 1) === 5);
