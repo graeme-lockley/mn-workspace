@@ -43,7 +43,7 @@ LexerState.prototype.next = function () {
     } else {
         const errorState = advanceState(currentState, currentState.input[currentState.index], this.configuration.err(currentState.input[currentState.index]));
         const mapTokenPattern = tokenPattern =>
-            matchRegex(tokenPattern.first, currentState).map(text => advanceState(currentState, text, tokenPattern.second(text)));
+            tokenPattern.first.matchFrom(currentState.input)(currentState.index).map(text => advanceState(currentState, text, tokenPattern.second(text)));
 
         return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(errorState));
     }
@@ -58,19 +58,8 @@ function isEndOfFile(index) {
 function skipWhitespace(whitespaceRegex) {
     return state =>
         whitespaceRegex
-            ? matchRegex(whitespaceRegex, state).map(text => advanceState(state, text)).withDefault(state)
+            ? whitespaceRegex.matchFrom(state.input)(state.index).map(text => advanceState(state, text)).withDefault(state)
             : state;
-}
-
-
-function matchRegex(regex, state) {
-    regex.lastIndex = state.index;
-    const matchedRegex = regex.exec(state.input);
-    if (matchedRegex) {
-        return Maybe.Just(matchedRegex[0]);
-    } else {
-        return Maybe.Nothing;
-    }
 }
 
 

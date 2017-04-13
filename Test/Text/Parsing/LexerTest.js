@@ -2,6 +2,7 @@ const Test = require("./../../Unit");
 
 const Array = require("../../../Data/Array");
 const Int = require("../../../Data/Int");
+const Regex = require("../../../Data/String/Regex");
 const Tuple = require("../../../Data/Tuple");
 
 const Assert = require("assert");
@@ -12,11 +13,11 @@ const Lexer = require("../../../Text/Parsing/Lexer");
 const lexerDefinition = Lexer.setup({
     eof: {id: 0, value: ""},
     err: text => ({id: -1, value: text}),
-    whitespacePattern: /\s*/iy,
+    whitespacePattern: Regex.from(/\s*/iy),
     tokenPatterns:
         Array.from([
-            Tuple(/[0-9]+/iy)(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
-            Tuple(/[A-Za-z_][A-Za-z0-9_]*/iy)(text => ({id: 2, value: text}))
+            Tuple(Regex.from(/[0-9]+/iy))(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
+            Tuple(Regex.from(/[A-Za-z_][A-Za-z0-9_]*/iy))(text => ({id: 2, value: text}))
     ])
 })
 ;
