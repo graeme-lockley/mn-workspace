@@ -1,7 +1,7 @@
 const Test = mrequire("core:Test.Unit:v1.0.0");
 
 const Array = mrequire("core:Data.Array:v1.0.0");
-const Int = require("../../../Data/Int");
+const Int = mrequire("core:Data.Int:v1.0.0");
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 const Regex = require("../../../Data/String/Regex");
 const Tuple = mrequire("core:Data.Tuple:v1.0.0");
