@@ -1,6 +1,6 @@
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 const String = require("../../Data/String");
-const Tuple = require("../../Data/Tuple");
+const Tuple = mrequire("core:Data.Tuple:v1.0.0");
 
 
 function LexerState(configuration, state) {

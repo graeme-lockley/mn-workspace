@@ -4,7 +4,7 @@ const Array = require("../../../Data/Array");
 const Int = require("../../../Data/Int");
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 const Regex = require("../../../Data/String/Regex");
-const Tuple = require("../../../Data/Tuple");
+const Tuple = mrequire("core:Data.Tuple:v1.0.0");
 
 const Assert = require("assert");
 
