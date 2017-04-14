@@ -1,4 +1,4 @@
-const Test = require("./../../Unit");
+const Test = mrequire("core:Test.Unit:v1.0.0");
 
 const Array = require("../../../Data/Array");
 const Int = require("../../../Data/Int");
