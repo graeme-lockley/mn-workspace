@@ -37,16 +37,25 @@ LexerState.prototype.index = function () {
 
 
 LexerState.prototype.next = function () {
-    const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
-    if (isEndOfFile(currentState.index)(currentState.input)) {
-        return new LexerState(this.configuration, finalState(this.configuration, currentState));
+    if (this.eof()) {
+        return this;
     } else {
-        const errorState = advanceState(currentState, currentState.input[currentState.index], this.configuration.err(currentState.input[currentState.index]));
-        const mapTokenPattern = tokenPattern =>
-            tokenPattern.first.matchFrom(currentState.input)(currentState.index).map(text => advanceState(currentState, text, tokenPattern.second(text)));
+        const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
+        if (isEndOfFile(currentState.index)(currentState.input)) {
+            return new LexerState(this.configuration, finalState(this.configuration, currentState));
+        } else {
+            const errorState = advanceState(currentState, currentState.input[currentState.index], this.configuration.err(currentState.input[currentState.index]));
+            const mapTokenPattern = tokenPattern =>
+                tokenPattern.first.matchFrom(currentState.input)(currentState.index).map(text => advanceState(currentState, text, tokenPattern.second(text)));
 
-        return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(errorState));
+            return new LexerState(this.configuration, this.configuration.tokenPatterns.findMap(mapTokenPattern).withDefault(errorState));
+        }
     }
+};
+
+
+LexerState.prototype.eof = function() {
+    return this.state.token === this.configuration.eof;
 };
 
 
@@ -86,7 +95,7 @@ function initialState(configuration, input) {
         input,
         0,
         Tuple(1)(0),
-        configuration.eof,
+        undefined,
         Tuple(1)(0),
         0);
 }
