@@ -1,6 +1,6 @@
 const Test = mrequire("core:Test.Unit:v1.0.0");
 
-const Array = require("../../../Data/Array");
+const Array = mrequire("core:Data.Array:v1.0.0");
 const Int = require("../../../Data/Int");
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 const Regex = require("../../../Data/String/Regex");
