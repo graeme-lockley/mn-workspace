@@ -1,5 +1,5 @@
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
-const String = require("../../Data/String");
+const String = mrequire("core:Data.String:v1.0.0");
 const Tuple = mrequire("core:Data.Tuple:v1.0.0");
 
 
