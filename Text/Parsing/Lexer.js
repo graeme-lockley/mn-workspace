@@ -40,7 +40,7 @@ LexerState.prototype.next = function () {
     if (this.eof()) {
         return this;
     } else {
-        const currentState = skipWhitespace(this.configuration.whitespacePattern)(this.state);
+        const currentState = skipWhitespaceComments(this.configuration)(this.state);
         if (isEndOfFile(currentState.index)(currentState.input)) {
             return new LexerState(this.configuration, finalState(this.configuration, currentState));
         } else {
@@ -54,7 +54,7 @@ LexerState.prototype.next = function () {
 };
 
 
-LexerState.prototype.eof = function() {
+LexerState.prototype.eof = function () {
     return this.state.token === this.configuration.eof;
 };
 
@@ -64,11 +64,12 @@ function isEndOfFile(index) {
 }
 
 
-function skipWhitespace(whitespaceRegex) {
+function skipWhitespaceComments(configuration) {
     return state =>
-        whitespaceRegex
-            ? whitespaceRegex.matchFrom(state.input)(state.index).map(text => advanceState(state, text)).withDefault(state)
-            : state;
+        configuration.whitespacePattern
+            .andThen(whitespacePattern => whitespacePattern.matchFrom(state.input)(state.index))
+            .map(matchedText => advanceState(state, matchedText))
+            .withDefault(state);
 }
 
 
