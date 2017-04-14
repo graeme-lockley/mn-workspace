@@ -1,5 +1,5 @@
 const Result = require("./Data/Result");
-const Maybe = mrequire("core:lang.Maybe:v1.0.0");
+const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 
 const Second = require("./second");
 

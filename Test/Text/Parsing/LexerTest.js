@@ -2,7 +2,7 @@ const Test = require("./../../Unit");
 
 const Array = require("../../../Data/Array");
 const Int = require("../../../Data/Int");
-const Maybe = mrequire("core:lang.Maybe:v1.0.0");
+const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 const Regex = require("../../../Data/String/Regex");
 const Tuple = require("../../../Data/Tuple");
 

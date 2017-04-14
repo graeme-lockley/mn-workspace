@@ -1,4 +1,4 @@
-const Maybe = mrequire("core:lang.Maybe:v1.0.0");
+const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 
 
 //- Reads an Int from a `String` value. The number must parse as an integer and fall within the valid range of values
