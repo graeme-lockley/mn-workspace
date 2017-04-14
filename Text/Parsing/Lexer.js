@@ -123,9 +123,9 @@ function initialState(input) {
     return mkRunningState(
         input,
         0,
-        Tuple(1)(0),
+        Tuple(1)(1),
         undefined,
-        Tuple(1)(0),
+        Tuple(1)(1),
         0);
 }
 

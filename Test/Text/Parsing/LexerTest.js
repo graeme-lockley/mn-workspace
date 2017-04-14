@@ -31,7 +31,7 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            0, "", Tuple(1)(0), 0);
+            0, "", Tuple(1)(1), 0);
     })
 
     .case("given a lexer with a defined token should return that token", () => {
@@ -39,7 +39,7 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            1, 2912, Tuple(1)(0), 0);
+            1, 2912, Tuple(1)(1), 0);
     })
 
     .case("given a lexer with a defined token should return that token and the next token whilst skipping whitespace", () => {
@@ -47,11 +47,11 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            1, 2912, Tuple(1)(0), 0);
+            1, 2912, Tuple(1)(1), 0);
 
         assertLexerState(
             lexer.next(),
-            2, "hello", Tuple(6)(0), 5);
+            2, "hello", Tuple(6)(1), 5);
     })
 
     .case("given a lexer with a character that the lexer does not recognise then the error token is returned and the lexer is advanced onto the next character", () => {
@@ -59,15 +59,15 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            1, 2912, Tuple(1)(0), 0);
+            1, 2912, Tuple(1)(1), 0);
 
         assertLexerState(
             lexer.next(),
-            -1, "*", Tuple(5)(0), 4);
+            -1, "*", Tuple(5)(1), 4);
 
         assertLexerState(
             lexer.next().next(),
-            2, "hello", Tuple(6)(0), 5);
+            2, "hello", Tuple(6)(1), 5);
     })
 
     .case("given a lexer with an input of only whitespace", () => {
@@ -75,7 +75,7 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            0, "", Tuple(4)(0), 3);
+            0, "", Tuple(4)(1), 3);
     })
 
     .case("given a lexer with input contain non-nested comments should ignore the comments", () => {
@@ -83,11 +83,11 @@ Test.newSuite("Lexer Suite")
 
         assertLexerState(
             lexer,
-            1, 123, Tuple(1)(0), 0);
+            1, 123, Tuple(1)(1), 0);
 
         assertLexerState(
             lexer.next(),
-            2, "abc", Tuple(1)(2), 21);
+            2, "abc", Tuple(1)(3), 21);
     });
 
 
