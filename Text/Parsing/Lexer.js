@@ -90,7 +90,7 @@ function advanceState(currentState, matchedText, matchedToken) {
 }
 
 
-function initialState(configuration, input) {
+function initialState(input) {
     return mkRunningState(
         input,
         0,
@@ -116,7 +116,7 @@ function finalState(configuration, state) {
 function setup(configuration) {
     return {
         fromString: function (input) {
-            return new LexerState(configuration, initialState(configuration, input)).next();
+            return new LexerState(configuration, initialState(input)).next();
         }
     };
 }
