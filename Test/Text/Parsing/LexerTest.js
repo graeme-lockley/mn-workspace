@@ -3,7 +3,7 @@ const Test = mrequire("core:Test.Unit:v1.0.0");
 const Array = mrequire("core:Data.Array:v1.0.0");
 const Int = mrequire("core:Data.Int:v1.0.0");
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
-const Regex = require("../../../Data/String/Regex");
+const Regex = mrequire("core:Data.String.Regex:v1.0.0");
 const Tuple = mrequire("core:Data.Tuple:v1.0.0");
 
 const Assert = require("assert");
