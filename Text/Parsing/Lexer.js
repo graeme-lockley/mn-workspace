@@ -65,11 +65,39 @@ function isEndOfFile(index) {
 
 
 function skipWhitespaceComments(configuration) {
-    return state =>
-        configuration.whitespacePattern
-            .andThen(whitespacePattern => whitespacePattern.matchFrom(state.input)(state.index))
-            .map(matchedText => advanceState(state, matchedText))
-            .withDefault(state);
+    return state => {
+        function findComment() {
+            return configuration.comments.findMap(comment => comment.open.matchFrom(state.input)(state.index).map(_ => comment));
+        }
+
+        function applyComment(comment) {
+            let index = state.index + 1;
+
+            while (!isEndOfFile(index)(state.input)) {
+                const closeMatch = comment.close.matchFrom(state.input)(index);
+
+                if (closeMatch.isJust()) {
+                    const commentString = state.input.substr(state.index, closeMatch.withDefault("").length + index - state.index);
+                    return advanceState(state, commentString);
+                } else {
+                    index += 1;
+                }
+            }
+
+            return advanceState(state, state.input.substr(state.index));
+        }
+
+
+        const possibleComment = findComment();
+
+        return possibleComment.map(comment => skipWhitespaceComments(configuration)(applyComment(comment)))
+            .withDefault(
+                configuration
+                    .whitespacePattern
+                    .andThen(whitespacePattern => whitespacePattern.matchFrom(state.input)(state.index))
+                    .map(matchedText => skipWhitespaceComments(configuration)(advanceState(state, matchedText)))
+                    .withDefault(state));
+    }
 }
 
 

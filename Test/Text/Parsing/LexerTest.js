@@ -14,14 +14,13 @@ const Lexer = require("../../../Text/Parsing/Lexer");
 const lexerDefinition = Lexer.setup({
         eof: {id: 0, value: ""},
         err: text => ({id: -1, value: text}),
-        whitespacePattern: Maybe.Just(Regex.from(/\s*/iy)),
+        whitespacePattern: Maybe.Just(Regex.from(/\s+/iy)),
         tokenPatterns: Array.from([
             Tuple(Regex.from(/[0-9]+/iy))(text => ({id: 1, value: Int.fromString(text).withDefault(0)})),
             Tuple(Regex.from(/[A-Za-z_][A-Za-z0-9_]*/iy))(text => ({id: 2, value: text}))
         ]),
         comments: Array.from([
-            {open: Regex.from(/\/\*/), close: Regex.from(/\*\//), nested: true},
-            {open: Regex.from(/\/\//), close: Regex.from(/\n/), nested: false}
+            {open: Regex.from(/\/\//my), close: Regex.from(/\n/my), nested: false}
         ])
     })
 ;
@@ -87,8 +86,8 @@ Test.newSuite("Lexer Suite")
             1, 123, Tuple(1)(0), 0);
 
         assertLexerState(
-            lexer,
-            2, "abc", Tuple(1)(0), 0);
+            lexer.next(),
+            2, "abc", Tuple(1)(2), 21);
     });
 
 
