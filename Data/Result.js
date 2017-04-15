@@ -48,4 +48,13 @@ assumption(!Okay(10).isError());
 assumption(Error(10).isError());
 
 
+Result.prototype.andThen = function(f) {
+    return this.map(okay => f(okay))(error => Error(error));
+};
+assumption(Okay(10).andThen(n => Okay(n * 2)).isOkay());
+assumption(Okay(10).andThen(n => Okay(n * 2)).withDefault(0) === 20);
+assumption(Error(1).andThen(n => Okay(n * 2)).isError());
+assumption(Error(1).andThen(n => Okay(n * 2)).map(identity)(identity) === 1);
+
+
 module.exports = {Error, Okay};
