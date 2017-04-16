@@ -7,10 +7,12 @@
  *
  * <adt_constructor> ::= UPPER_ID { <type> }
  *
- * <type> ::= UPPER_ID | LPAREN UPPER_ID { UPPER_ID | LOWER_ID } RPAREN
+ * <type> ::= UPPER_ID | LOWER_ID | LPAREN UPPER_ID { UPPER_ID | LOWER_ID } RPAREN
  */
 
 const Array = mrequire("core:Data.Array:v1.0.0");
+const Tuple = mrequire("core:Data.Tuple:v1.0.0");
+
 const Lexer = require("./Lexer");
 const C = require("../../Text/Parsing/Combinators");
 
@@ -20,6 +22,7 @@ const C = require("../../Text/Parsing/Combinators");
 const parseType =
     C.or([
         C.symbolMap(Lexer.Tokens.UPPER_ID)(t => Array.singleton(t.value)),
+        C.symbolMap(Lexer.Tokens.LOWER_ID)(t => Array.singleton(t.value)),
         C.andMap([
             C.symbol(Lexer.Tokens.LPAREN),
             C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
@@ -33,6 +36,16 @@ const parseType =
     ]);
 
 
+const parseADTConstructor =
+    C.andMap([
+        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
+        C.many(parseType)
+    ])(t =>
+        Tuple(t.at(0).withDefault(""))
+        (t.at(1).withDefault(Array.empty)));
+
+
 module.exports = {
+    parseADTConstructor,
     parseType
 };
