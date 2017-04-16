@@ -15,6 +15,9 @@ Unit.newSuite("Parser Suite - parseType")
     .case("given '(Maybe String)' should return ['Maybe', 'String']", () => {
         Assert.deepEqual(astResult(Parser.parseType(Lexer.fromString("(Maybe String)"))), Array.from(["Maybe", "String"]));
     })
+    .case("given '(Maybe String a b)' should return ['Maybe', 'String', 'a', 'b']", () => {
+        Assert.deepEqual(astResult(Parser.parseType(Lexer.fromString("(Maybe String a b)"))), Array.from(["Maybe", "String", "a", "b"]));
+    })
 ;
 
 
