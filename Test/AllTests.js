@@ -1,22 +1,4 @@
-const FS = require("fs");
-const Path = require("path");
+const Runner = mrequire("core:Test.Unit.Runner:v1.0.0");
 
 
-function runTestsInDir(directory) {
-    FS.readdirSync(directory).forEach(file => {
-        const fileName = directory + Path.sep + file;
-
-        FS.stat(fileName, (err, stat) => {
-            if (stat.isFile()) {
-                if (fileName.endsWith("Test.js")) {
-                    require(fileName);
-                }
-            } else if (stat.isDirectory()) {
-                runTestsInDir(fileName);
-            }
-        });
-    });
-}
-
-
-runTestsInDir(__dirname);
+Runner(__dirname)({filter: filename => filename.endsWith("Test.js")});
