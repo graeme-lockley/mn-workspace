@@ -45,7 +45,27 @@ const parseADTConstructor =
         (t.at(1).withDefault(Array.empty)));
 
 
+const parseADT =
+    C.andMap([
+        C.symbol(Lexer.Tokens.TYPE),
+        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
+        C.many(C.symbolMap(Lexer.Tokens.LOWER_ID)(t => t.value)),
+        C.symbol(Lexer.Tokens.EQUAL),
+        parseADTConstructor,
+        C.many(
+            C.andMap([
+                C.symbol(Lexer.Tokens.BAR),
+                parseADTConstructor
+            ])(t => t.at(1).withDefault(Array.empty))
+        )
+    ])(t =>
+    Tuple(t.at(2).withDefault(Array.empty).cons(t.at(1).withDefault("")))
+    (t.at(5).withDefault(Array.empty).cons(t.at(4).withDefault(Array.empty)))
+    );
+
+
 module.exports = {
+    parseADT,
     parseADTConstructor,
     parseType
 };

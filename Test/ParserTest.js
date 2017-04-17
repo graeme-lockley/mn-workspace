@@ -9,6 +9,17 @@ const Parser = require("../Tool/ADT/Parser");
 const Result = require("../Data/Result");
 
 
+Unit.newSuite("Parser Suite - parseADT")
+    .case("given 'type Maybe a = Just a | Nothing' should return corresponding AST', []", () => {
+        Assert.deepEqual(
+            astResult(Parser.parseADT(Lexer.fromString("type Maybe a = Just a | Nothing"))),
+            Tuple(Array.from(["Maybe", "a"]))(Array.from([
+                Tuple("Just")(Array.singleton(Array.singleton("a"))),
+                Tuple("Nothing")(Array.empty)
+            ])));
+    });
+
+
 Unit.newSuite("Parser Suite - parseADTConstructor")
     .case("given 'Nothing' should return Tuple('Nothing', []", () => {
         Assert.deepEqual(
@@ -31,6 +42,7 @@ Unit.newSuite("Parser Suite - parseADTConstructor")
             Tuple("Result")(Array.from([Array.singleton("String"), Array.from(["Tuple", "a", "Lexer"])])));
     });
 
+
 Unit.newSuite("Parser Suite - parseType")
     .case("given 'a' should return ['a']", () => {
         Assert.deepEqual(astResult(Parser.parseType(Lexer.fromString("a"))), Array.from(["a"]));
@@ -47,5 +59,7 @@ Unit.newSuite("Parser Suite - parseType")
 
 
 function astResult(value) {
-    return value.reduce(okay => okay.first)(error => Assert.fail(`${error.first.position()}: ${error.second}`));
+    const result = value.reduce(okay => okay.first)(error => Assert.fail(`${error.first.position()}: ${error.second}`));
+    console.log(JSON.stringify(result));
+    return result;
 }
