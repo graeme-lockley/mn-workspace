@@ -9,6 +9,19 @@ const Parser = require("../Tool/ADT/Parser");
 const Result = require("../Data/Result");
 
 
+Unit.newSuite("Parser Suite - parse")
+    .case("given 'type List a = Nil | Cons a (List a)' should return corresponding AST", () => {
+        Assert.deepEqual(
+            astResult(Parser.parse(Lexer.fromString("type List a = Nil | Cons a (List a)"))),
+            Tuple(
+                Tuple(Array.from(["List", "a"]))(Array.from([
+                    Tuple("Nil")(Array.empty),
+                    Tuple("Cons")(Array.from([Array.singleton("a"), Array.from(["List", "a"])]))
+                ])))(
+                Array.empty
+            ));
+    });
+
 Unit.newSuite("Parser Suite - parseImport")
     .case("given 'import \"core:Data.String:1.0.0\" as String' should return Tuple(\"core:Data.String:1.0.0\", \"String\")", () => {
         Assert.deepEqual(

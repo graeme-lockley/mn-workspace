@@ -75,7 +75,17 @@ const parseImport =
         t.at(3).withDefault("")));
 
 
+const parse =
+    C.andMap([
+        C.many(parseImport),
+        parseADT
+    ])(t => Tuple(
+        t.at(1).withDefault(Tuple("")("")))(
+        t.at(0).withDefault(Array.empty)));
+
+
 module.exports = {
+    parse,
     parseADT,
     parseADTConstructor,
     parseImport,
