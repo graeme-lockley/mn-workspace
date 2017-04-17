@@ -41,8 +41,9 @@ const parseADTConstructor =
         C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
         C.many(parseType)
     ])(t =>
-        Tuple(t.at(0).withDefault(""))
-        (t.at(1).withDefault(Array.empty)));
+        Tuple(
+            t.at(0).withDefault(""))(
+            t.at(1).withDefault(Array.empty)));
 
 
 const parseADT =
@@ -58,10 +59,9 @@ const parseADT =
                 parseADTConstructor
             ])(t => t.at(1).withDefault(Array.empty))
         )
-    ])(t =>
-    Tuple(t.at(2).withDefault(Array.empty).cons(t.at(1).withDefault("")))
-    (t.at(5).withDefault(Array.empty).cons(t.at(4).withDefault(Array.empty)))
-    );
+    ])(t => Tuple(
+        t.at(2).withDefault(Array.empty).cons(t.at(1).withDefault("")))(
+        t.at(5).withDefault(Array.empty).cons(t.at(4).withDefault(Array.empty))));
 
 
 module.exports = {
