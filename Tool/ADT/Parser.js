@@ -19,17 +19,22 @@ const C = require("../../Text/Parsing/Combinators");
 
 // Parser a :: Lexer -> Result String (Tuple a Lexer)
 
+
+const symbolValue =
+    token => C.symbolMap(token)(t => t.value);
+
+
 const parseType =
     C.or([
         C.symbolMap(Lexer.Tokens.UPPER_ID)(t => Array.singleton(t.value)),
         C.symbolMap(Lexer.Tokens.LOWER_ID)(t => Array.singleton(t.value)),
         C.andMap([
             C.symbol(Lexer.Tokens.LPAREN),
-            C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
+            symbolValue(Lexer.Tokens.UPPER_ID),
             C.many(
                 C.or([
-                    C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
-                    C.symbolMap(Lexer.Tokens.LOWER_ID)(t => t.value)
+                    symbolValue(Lexer.Tokens.UPPER_ID),
+                    symbolValue(Lexer.Tokens.LOWER_ID)
                 ])),
             C.symbol(Lexer.Tokens.RPAREN)
         ])(t => t.at(2).withDefault(Array.empty).cons(t.at(1).withDefault("")))
@@ -38,7 +43,7 @@ const parseType =
 
 const parseADTConstructor =
     C.andMap([
-        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
+        symbolValue(Lexer.Tokens.UPPER_ID),
         C.many(parseType)
     ])(t =>
         Tuple(
@@ -49,8 +54,8 @@ const parseADTConstructor =
 const parseADT =
     C.andMap([
         C.symbol(Lexer.Tokens.TYPE),
-        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value),
-        C.many(C.symbolMap(Lexer.Tokens.LOWER_ID)(t => t.value)),
+        symbolValue(Lexer.Tokens.UPPER_ID),
+        C.many(symbolValue(Lexer.Tokens.LOWER_ID)),
         C.symbol(Lexer.Tokens.EQUAL),
         parseADTConstructor,
         C.many(
@@ -67,9 +72,9 @@ const parseADT =
 const parseImport =
     C.andMap([
         C.symbol(Lexer.Tokens.IMPORT),
-        C.symbolMap(Lexer.Tokens.CONSTANT_STRING)(t => t.value),
+        symbolValue(Lexer.Tokens.CONSTANT_STRING),
         C.symbol(Lexer.Tokens.AS),
-        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value)
+        symbolValue(Lexer.Tokens.UPPER_ID)
     ])(t => Tuple(
         t.at(1).withDefault(""))(
         t.at(3).withDefault("")));
