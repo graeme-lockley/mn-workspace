@@ -9,8 +9,16 @@ const Parser = require("../Tool/ADT/Parser");
 const Result = require("../Data/Result");
 
 
+Unit.newSuite("Parser Suite - parseImport")
+    .case("given 'import \"core:Data.String:1.0.0\" as String' should return Tuple(\"core:Data.String:1.0.0\", \"String\")", () => {
+        Assert.deepEqual(
+            astResult(Parser.parseImport(Lexer.fromString('import "core:Data.String:1.0.0" as String'))),
+            Tuple("core:Data.String:1.0.0")("String"));
+    });
+
+
 Unit.newSuite("Parser Suite - parseADT")
-    .case("given 'type Maybe a = Just a | Nothing' should return corresponding AST', []", () => {
+    .case("given 'type Maybe a = Just a | Nothing' should return corresponding AST", () => {
         Assert.deepEqual(
             astResult(Parser.parseADT(Lexer.fromString("type Maybe a = Just a | Nothing"))),
             Tuple(Array.from(["Maybe", "a"]))(Array.from([
@@ -59,7 +67,5 @@ Unit.newSuite("Parser Suite - parseType")
 
 
 function astResult(value) {
-    const result = value.reduce(okay => okay.first)(error => Assert.fail(`${error.first.position()}: ${error.second}`));
-    console.log(JSON.stringify(result));
-    return result;
+    return value.reduce(okay => okay.first)(error => Assert.fail(`${error.first.position()}: ${error.second}`));
 }

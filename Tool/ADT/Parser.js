@@ -64,8 +64,20 @@ const parseADT =
         t.at(5).withDefault(Array.empty).cons(t.at(4).withDefault(Array.empty))));
 
 
+const parseImport =
+    C.andMap([
+        C.symbol(Lexer.Tokens.IMPORT),
+        C.symbolMap(Lexer.Tokens.CONSTANT_STRING)(t => t.value),
+        C.symbol(Lexer.Tokens.AS),
+        C.symbolMap(Lexer.Tokens.UPPER_ID)(t => t.value)
+    ])(t => Tuple(
+        t.at(1).withDefault(""))(
+        t.at(3).withDefault("")));
+
+
 module.exports = {
     parseADT,
     parseADTConstructor,
+    parseImport,
     parseType
 };
