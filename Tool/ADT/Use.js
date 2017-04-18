@@ -133,6 +133,4 @@ function use(fileName) {
 }
 
 
-module.exports = {
-    use
-};
+module.exports = use;
