@@ -6,8 +6,7 @@ global.assumption = Assumption.assumption;
 global.assumptionEqual = Assumption.assumptionEqual;
 
 
-const Use = require("./lib/Use");
-global.use = Use.use;
+global.use = require("./lib/use");
 
 
 module.exports = {};
