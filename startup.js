@@ -1,4 +1,4 @@
-global.mrequire = require("./lib/Prelude");
+global.mrequire = require("./lib/mrequire");
 
 
 const Assumption = mrequire("core:assumption:v1.0.0");
