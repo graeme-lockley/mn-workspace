@@ -1,6 +1,7 @@
 const FS = require("fs");
-const Maybe = require("../../../Data/Native/Maybe");
-const Result = require("../../../Data/Native/Result");
+
+const Maybe = mrequire("core:Data.Native.Maybe:1.1.0");
+const Result = mrequire("core:Data.Native.Result:1.0.0");
 
 
 const stat = fileName => {
