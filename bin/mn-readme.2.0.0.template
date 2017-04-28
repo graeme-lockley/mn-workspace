@@ -1,28 +1,34 @@
+const String = mrequire("core:Data.Native.String:1.0.0");
+
+
+const identity = x => x;
+
+
+const compose = (f1, f2) => x =>
+    f1(f2(x));
+
+
 const functionName = signature => {
-    const indexOfColonColon = signature.indexOf("::");
+    const prefix = String.indexOf("::")(signature).reduce(
+        () => identity)(
+        i => compose(String.trim, String.substring(0)(i))) (signature);
 
-    const prefix = (indexOfColonColon === -1)
-        ? signature
-        : signature.substring(0, indexOfColonColon).trim();
-
-    const indexOfEqualGreater = prefix.indexOf("=>");
-
-    return (indexOfEqualGreater === -1)
-        ? prefix
-        : prefix.substring(indexOfEqualGreater + 2).trim();
+    return String.indexOf("=>")(prefix).reduce(
+        () => identity)(
+        i => compose(String.trim, String.substringFrom(i + 2))) (prefix);
 };
 
 
 const parseImportName = importText => {
-    const indexOfFirstColon = importText.indexOf(":");
-    const indexOfSecondColon = importText.indexOf(":", indexOfFirstColon + 1);
+    const indexOfFirstColon = String.indexOf(":")(importText).reduce(() => -1)(v => v);
+    const indexOfSecondColon = String.indexOfFrom(":")(indexOfFirstColon + 1)(importText).reduce(() => -1)(v => v);
 
     return (indexOfFirstColon === -1) || (indexOfSecondColon === -1)
         ? {type: "core", name: importText, version: ""}
         : {
-            type: importText.substring(0, indexOfSecondColon),
-            name: importText.substring(indexOfFirstColon + 1, indexOfSecondColon),
-            version: importText.substring(indexOfSecondColon + 1)
+            type: String.substring(0)(indexOfFirstColon)(importText),
+            name: String.substring(indexOfFirstColon + 1)(indexOfSecondColon)(importText),
+            version: String.substringFrom(indexOfSecondColon + 1)(importText)
           };
 };
 
