@@ -1,4 +1,4 @@
-const String = mrequire("core:Data.Native.String:1.0.0");
+const String = mrequire("core:Data.Native.String:1.0.1");
 
 
 const identity = x => x;
