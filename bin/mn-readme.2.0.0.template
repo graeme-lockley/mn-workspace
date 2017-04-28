@@ -1,0 +1,66 @@
+const functionName = signature => {
+    const indexOfColonColon = signature.indexOf("::");
+
+    const prefix = (indexOfColonColon === -1)
+        ? signature
+        : signature.substring(0, indexOfColonColon).trim();
+
+    const indexOfEqualGreater = prefix.indexOf("=>");
+
+    return (indexOfEqualGreater === -1)
+        ? prefix
+        : prefix.substring(indexOfEqualGreater + 2).trim();
+};
+
+
+const parseImportName = importText => {
+    const indexOfFirstColon = importText.indexOf(":");
+    const indexOfSecondColon = importText.indexOf(":", indexOfFirstColon + 1);
+
+    return (indexOfFirstColon === -1) || (indexOfSecondColon === -1)
+        ? {type: "core", name: importText, version: ""}
+        : {
+            type: importText.substring(0, indexOfSecondColon),
+            name: importText.substring(indexOfFirstColon + 1, indexOfSecondColon),
+            version: importText.substring(indexOfSecondColon + 1)
+          };
+};
+
+
+%%% moduleName source
+# <% moduleName %>
+
+> source.header.content.forEach(line => {
+<% line %>
+> });
+
+> source.functions.content.forEach(func => {
+>     if (func.signature.isJust()) {
+### <% functionName(func.signature.withDefault()) %>
+
+```haskell
+<% func.signature.withDefault() %>
+```
+
+>         func.header.content.forEach(line => {
+<% line %>
+>         });
+
+>         func.assumptions.content.forEach(assumption => {
+```haskell
+<% assumption %>
+```
+>         });
+
+
+>     }
+> });
+
+> if (source.imports.length() > 0) {
+## Dependencies
+
+>   source.imports.content.forEach(importText => {
+>       const parsedImport = parseImportName(importText);
+* [<% parsedImport.name %> (<% parsedImport.version %>)](https://github.com/graeme-lockley/mn-<% parsedImport.name%>)
+>   });
+> }
