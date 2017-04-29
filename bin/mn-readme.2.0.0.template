@@ -39,25 +39,28 @@ const parseImportName = importText => {
 > });
 
 > source.functions.content.forEach(func => {
->     if (func.signature.isJust()) {
+>   if (func.signature.isJust()) {
 ### <% functionName(func.signature.withDefault()) %>
 
 ```haskell
 <% func.signature.withDefault() %>
 ```
 
->         func.header.content.forEach(line => {
+>       func.header.content.forEach(line => {
 <% line %>
->         });
+>       });
 
->         func.assumptions.content.forEach(assumption => {
+>       if (func.assumptions.length() > 0) {
+#### Examples:
+
 ```haskell
+>           func.assumptions.content.forEach(assumption => {
 <% assumption %>
+>           });
 ```
->         });
 
-
->     }
+>       }
+>   }
 > });
 
 > if (source.imports.length() > 0) {
