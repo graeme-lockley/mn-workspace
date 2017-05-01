@@ -59,8 +59,8 @@ class  Monad m  where
 ### mn Base Classes
 
 ```haskell
-class  Eq a  where  
-        (==), (!=)  ::  a -> Bool  
+class  Parity a  where  
+    (==), (!=)  ::  a -> Bool  
 ```
 
 Note the following:
@@ -69,7 +69,7 @@ Note the following:
 
 
 ```haskell
-class  (Eq a) => Ord a  where  
+class  (Parity a) => Ordered a  where  
     compare              :: a -> Ordering  
     (<), (<=), (>=), (>) :: a -> Bool  
     max, min             :: a -> a  
@@ -81,7 +81,7 @@ class  Show a  where
 ```
 
 ```haskell
-class  Enum a  where  
+class  Enumerable a  where  
     succ, pred     :: () -> Maybe a  
 ```
 
@@ -176,7 +176,7 @@ Will use a similar hierarchy as provided by Haskell but with the following think
 The following classes represent the intention of what I'm trying to do:
 
 ```haskell
-class  (Eq a, Show a) => Num a  where  
+class  (Parity a, Show a) => Number a  where  
     (+), (-), (⋆)  :: a -> a  
     negate         :: () -> a  
     abs, signum    :: () -> a
@@ -185,6 +185,7 @@ class  (Eq a, Show a) => Num a  where
 
 Note the following:
 
+* `Num` has been renamed `Number`.
 * The first argument has been dropped because I'm using instances which contain a boxed value.
 * There is no `(/)` operation as this operation is dependent on the actual type.
 * The `fromInteger` has been removed as this function is a constructor and contained within the data-type's package.
@@ -193,8 +194,8 @@ Note the following:
   
   
 ```haskell
-class  (Num a, Ord a, Enum a) => Integer a  where  
-    quot, rem, div, mod :: a -> Maybe a  
+class  (Number a, Ordered a, Enumerable a) => Integer a  where  
+    quot, rem, (/), mod :: a -> Maybe a  
     quotRem, divMod     :: a -> Maybe (a * a)  
 ```
 
@@ -206,7 +207,7 @@ Note the following:
 
 
 ```haskell
-class  (Num a, Ord a) => Real a  where  
+class  (Number a, Ordered a) => Real a  where  
     exp, log, sqrt      :: () -> a  
     log                 :: () -> Maybe a  
     logBase             :: a -> Maybe a  
@@ -234,5 +235,5 @@ instance Real a => Float a
 
 instance Integer a => Int a
  
-instance (Eq a, Bounded a) => Char a
+instance (Parity a, Bounded a, Show a) => Char a
 ```
