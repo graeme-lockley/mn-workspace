@@ -76,7 +76,7 @@ class  (Parity a) => Ordered a  where
 ```
 
 ```haskell
-class  Show a  where  
+class  Visible a  where  
     show      :: a -> String  
 ```
 
@@ -176,7 +176,7 @@ Will use a similar hierarchy as provided by Haskell but with the following think
 The following classes represent the intention of what I'm trying to do:
 
 ```haskell
-class  (Parity a, Show a) => Number a  where  
+class  (Parity a, Visible a) => Number a  where  
     (+), (-), (⋆)  :: a -> a  
     negate         :: () -> a  
     abs, signum    :: () -> a
@@ -235,5 +235,5 @@ instance Real a => Float a
 
 instance Integer a => Int a
  
-instance (Parity a, Bounded a, Show a) => Char a
+instance (Parity a, Bounded a, Visible a) => Char a
 ```
