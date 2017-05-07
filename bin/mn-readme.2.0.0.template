@@ -1,7 +1,7 @@
 const Array = mrequire("core:Data.Array:1.0.0");
 
 const NativeString = mrequire("core:Data.Native.String:1.0.1");
-const String = mrequire("core:Data.String:1.0.2");
+const String = mrequire("core:Data.String:1.1.0");
 
 
 const identity = x => x;
@@ -44,7 +44,7 @@ const parseImportName = importText => {
 ## Index
 
 > Array.of(source.functions.content).filter(func => func.signature.isJust()).map(func => String.of(functionName(func.signature.withDefault()))).sort().content.forEach(name => {
-[<% name.value %>](#<% name.value %>)
+[<% name.value %>](#<% name.lowerCase().value %>)
 > });
 
 ## Detail
