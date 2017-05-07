@@ -1,12 +1,12 @@
 #!/usr/bin/env mnode
 
 const FileSystem = mrequire("core:System.IO.Native.FileSystem:1.2.0");
-const Source = require("../../mn-docs/Source");
+const Source = mrequire("core:docs:1.0.0");
 
 const template = use(__dirname + "/mn-readme.2.0.0.template");
 
 FileSystem.readFile("index.js")
-	.then(Source.parseSource)
+	.then(Source.source)
     .then(template("Some Package"))
     .then(FileSystem.writeFile("README.md"))
     .then(_ => console.log("README.md has been updated"));
