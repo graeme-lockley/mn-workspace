@@ -1,4 +1,4 @@
-#!/usr/local/bin/node --require /Users/graeme.lockley/Workspace/github/mn/mn-workspace/startup
+#!/usr/bin/env mnode
 
 const Maybe = mrequire("core:Data.Maybe:v1.0.0");
 
