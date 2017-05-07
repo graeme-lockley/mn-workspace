@@ -1,4 +1,7 @@
-const String = mrequire("core:Data.Native.String:1.0.1");
+const Array = mrequire("core:Data.Array:1.0.0");
+
+const NativeString = mrequire("core:Data.Native.String:1.0.1");
+const String = mrequire("core:Data.String:1.0.2");
 
 
 const identity = x => x;
@@ -9,26 +12,26 @@ const compose = (f1, f2) => x =>
 
 
 const functionName = signature => {
-    const prefix = String.indexOf("::")(signature).reduce(
+    const prefix = NativeString.indexOf("::")(signature).reduce(
         () => identity)(
-        i => compose(String.trim, String.substring(0)(i))) (signature);
+        i => compose(NativeString.trim, NativeString.substring(0)(i))) (signature);
 
-    return String.indexOf("=>")(prefix).reduce(
+    return NativeString.indexOf("=>")(prefix).reduce(
         () => identity)(
-        i => compose(String.trim, String.substringFrom(i + 2))) (prefix);
+        i => compose(NativeString.trim, NativeString.substringFrom(i + 2))) (prefix);
 };
 
 
 const parseImportName = importText => {
-    const indexOfFirstColon = String.indexOf(":")(importText).reduce(() => -1)(v => v);
-    const indexOfSecondColon = String.indexOfFrom(":")(indexOfFirstColon + 1)(importText).reduce(() => -1)(v => v);
+    const indexOfFirstColon = NativeString.indexOf(":")(importText).reduce(() => -1)(v => v);
+    const indexOfSecondColon = NativeString.indexOfFrom(":")(indexOfFirstColon + 1)(importText).reduce(() => -1)(v => v);
 
     return (indexOfFirstColon === -1) || (indexOfSecondColon === -1)
         ? {type: "core", name: importText, version: ""}
         : {
-            type: String.substring(0)(indexOfFirstColon)(importText),
-            name: String.substring(indexOfFirstColon + 1)(indexOfSecondColon)(importText),
-            version: String.substringFrom(indexOfSecondColon + 1)(importText)
+            type: NativeString.substring(0)(indexOfFirstColon)(importText),
+            name: NativeString.substring(indexOfFirstColon + 1)(indexOfSecondColon)(importText),
+            version: NativeString.substringFrom(indexOfSecondColon + 1)(importText)
           };
 };
 
@@ -37,6 +40,14 @@ const parseImportName = importText => {
 > source.header.content.forEach(line => {
 <% line %>
 > });
+
+## Index
+
+> Array.of(source.functions.content).filter(func => func.signature.isJust()).map(func => String.of(functionName(func.signature.withDefault()))).sort().content.forEach(name => {
+[<% name.value %>](#<% name.value %>)
+> });
+
+## Detail
 
 > source.functions.content.forEach(func => {
 >   if (func.signature.isJust()) {
