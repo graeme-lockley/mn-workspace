@@ -18,11 +18,23 @@
 //-      size () = foldl 0 (\a \_ -> a + 1)
 //- ```
 
-const Int = require("./Int").Int;
-
-
 function CollectionType() {
 }
+
+
+CollectionType.prototype.reduce = function (fNil) {
+    return fCons => {
+        const cons = this.unapplyCons();
+
+        if (cons.isJust()) {
+            const unboxed = cons.withDefault([]);
+
+            return fCons(unboxed[0])(unboxed[1]);
+        } else {
+            return fNil();
+        }
+    }
+};
 
 
 CollectionType.prototype.foldl = function (z) {
