@@ -1,3 +1,12 @@
+//- An array implementation of sequence using native arrays.
+//-
+//- type Array a extends NativeBuffer implements Sequence a, Visible a where
+//-      ~Nil :: Maybe ()
+//-      ~Cons :: Maybe a * (Collection a)
+//-
+
+const Interfaces = require("./Interfaces");
+
 const Maybe = require("./Maybe");
 const Tuple = require("./Tuple");
 
@@ -7,55 +16,79 @@ const NativeMaybe = require("../Native/Data/Maybe");
 const Int = require("./Int").Int;
 const $String = require("./String").String;
 
+const Parity = require("./Parity");
+const Sequence = require("./Sequence");
+const Visible = require("./Visible");
+
 const Ordered = require("./Ordered");
+
+
+function ArrayType() {
+}
+
+
+const ArrayTypeInstance =
+    new ArrayType();
 
 
 function ArrayState(content) {
     this.content = content;
+    this.type = ArrayTypeInstance;
 }
+
+
+Interfaces.extend(ArrayState, [
+    Parity.ParityType,
+    Sequence.SequenceType,
+    Visible.VisibleType
+]);
 
 
 //- Constructor that create an `Array` from a `Data.Native.Array`.
 //= of :: Data.Native.Array a -> Array a
-const of = content =>
-    new ArrayState(content);
-assumptionEqual(of([1, 2, 3, 4]).content, [1, 2, 3, 4]);
+ArrayType.prototype.of = function(content) {
+    return new ArrayState(content);
+};
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).content, [1, 2, 3, 4]);
 
 
 //- Constructor that create an `Array` containing a single element.
 //= singleton :: a -> Array a
-const singleton = content =>
-    of([content]);
-assumptionEqual(singleton(1).content, [1]);
+ArrayType.prototype.singleton = function(content) {
+    return new ArrayState([content]);
+};
+assumptionEqual(ArrayTypeInstance.singleton(1).content, [1]);
 
 
 //- Constructor that create an empty `Array`.
 //= empty :: Array a
-const empty =
+ArrayType.prototype.empty =
     new ArrayState([]);
-assumptionEqual(empty.content, []);
+assumptionEqual(ArrayTypeInstance.empty.content, []);
 
 
 ArrayState.prototype.map = function (f) {
-    return of(NativeArray.map(f)(this.content));
+    return this.type.of(NativeArray.map(f)(this.content));
 };
-assumptionEqual(of([1, 2, 3, 4]).map(n => "p" + n), of(["p1", "p2", "p3", "p4"]));
-assumptionEqual(empty.map(n => "p" + n), empty);
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).map(n => "p" + n), ArrayTypeInstance.of(["p1", "p2", "p3", "p4"]));
+assumptionEqual(ArrayTypeInstance.empty.map(n => "p" + n), ArrayTypeInstance.empty);
 
 
 //- Creates an array of `Int`s for the given range.
 //= range :: Data.Int -> Data.Int -> Array Data.Int
-const range = lower => upper =>
-    of(NativeArray.map(Int.of)(NativeArray.range(lower.content)(upper.content)));
-assumptionEqual(range(Int.of(1))(Int.of(10)), of([1, 2, 3, 4, 5, 6, 7, 8, 9]).map(Int.of));
-assumptionEqual(range(Int.of(10))(Int.of(1)), of([10, 9, 8, 7, 6, 5, 4, 3, 2]).map(Int.of));
+ArrayType.prototype.range = function(lower) {
+    return upper =>
+        new ArrayState(NativeArray.map(Int.of)(NativeArray.range(lower.content)(upper.content)));
+};
+assumptionEqual(ArrayTypeInstance.range(Int.of(1))(Int.of(10)), ArrayTypeInstance.of([1, 2, 3, 4, 5, 6, 7, 8, 9]).map(Int.of));
+assumptionEqual(ArrayTypeInstance.range(Int.of(10))(Int.of(1)), ArrayTypeInstance.of([10, 9, 8, 7, 6, 5, 4, 3, 2]).map(Int.of));
 
 
 ArrayState.prototype.length = function () {
-    return NativeArray.length(this.content);
+    return Int.of(NativeArray.length(this.content));
 };
-assumptionEqual(empty.length(), 0);
-assumptionEqual(of([1, 2, 3]).length(), 3);
+assumptionEqual(ArrayTypeInstance.empty.length(), Int.of(0));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).length(), Int.of(3));
 
 
 const nativeMaybeToMaybe = value =>
@@ -75,99 +108,99 @@ ArrayState.prototype.findMap = function (f) {
             .findMap(this.content)(x => maybeToNativeMaybe(f(x)))
     );
 };
-assumption(of([1, 2, 3, 4, 5]).findMap(n => n === 3 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 9);
-assumption(of([1, 2, 3, 4, 5]).findMap(n => n === 10 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 0);
+assumption(ArrayTypeInstance.of([1, 2, 3, 4, 5]).findMap(n => n === 3 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 9);
+assumption(ArrayTypeInstance.of([1, 2, 3, 4, 5]).findMap(n => n === 10 ? Maybe.Just(n * n) : Maybe.Nothing).withDefault(0) === 0);
 
 
 ArrayState.prototype.append = function (item) {
-    return of(NativeArray.append(this.content)(item));
+    return this.type.of(NativeArray.append(this.content)(item));
 };
-assumptionEqual(of([1, 2, 3]).append(4), of([1, 2, 3, 4]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).append(4), ArrayTypeInstance.of([1, 2, 3, 4]));
 
 
 ArrayState.prototype.prepend = function (item) {
-    return of(NativeArray.prepend(item)(this.content));
+    return this.type.of(NativeArray.prepend(item)(this.content));
 };
-assumptionEqual(of([1, 2, 3]).prepend(0), of([0, 1, 2, 3]));
-assumptionEqual(empty.prepend(0), of([0]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).prepend(0), ArrayTypeInstance.of([0, 1, 2, 3]));
+assumptionEqual(ArrayTypeInstance.empty.prepend(0), ArrayTypeInstance.of([0]));
 
 
 ArrayState.prototype.slice = function (start) {
     return end =>
-        of(NativeArray.slice(this.content)(start)(end));
+        this.type.of(NativeArray.slice(this.content)(start)(end));
 };
-assumptionEqual(of([1, 2, 3, 4, 5]).slice(1)(3), of([2, 3]));
-assumptionEqual(of([1, 2, 3, 4, 5]).slice(1)(2), of([2]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(1)(3), ArrayTypeInstance.of([2, 3]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(1)(2), ArrayTypeInstance.of([2]));
 
 
 ArrayState.prototype.at = function (index) {
     return nativeMaybeToMaybe(NativeArray.at(this.content)(index));
 };
-assumptionEqual(of([1, 2, 3]).at(2), Maybe.Just(3));
-assumptionEqual(of([1, 2, 3]).at(5), Maybe.Nothing);
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(2), Maybe.Just(3));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(5), Maybe.Nothing);
 
 
 ArrayState.prototype.head = function () {
     return this.at(0);
 };
-assumptionEqual(of([1, 2, 3, 4]).head(), Maybe.Just(1));
-assumptionEqual(empty.head(), Maybe.Nothing);
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).head(), Maybe.Just(1));
+assumptionEqual(ArrayTypeInstance.empty.head(), Maybe.Nothing);
 
 
 ArrayState.prototype.tail = function () {
-    const contentLength = this.length();
+    const contentLength = NativeArray.length(this.content);
 
     return contentLength > 0 ? Maybe.Just(this.slice(1)(contentLength)) : Maybe.Nothing;
 };
-assumptionEqual(of([1, 2, 3, 4]).tail(), Maybe.Just(of([2, 3, 4])));
-assumptionEqual(of([1]).tail(), Maybe.Just(empty));
-assumptionEqual(empty.tail(), Maybe.Nothing);
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).tail(), Maybe.Just(ArrayTypeInstance.of([2, 3, 4])));
+assumptionEqual(ArrayTypeInstance.of([1]).tail(), Maybe.Just(ArrayTypeInstance.empty));
+assumptionEqual(ArrayTypeInstance.empty.tail(), Maybe.Nothing);
 
 
 ArrayState.prototype.concat = function (array) {
-    return of(NativeArray.concat(this.content)(array.content));
+    return this.type.of(NativeArray.concat(this.content)(array.content));
 };
-assumptionEqual(of([1, 2, 3]).concat(of([4, 5, 6])), of([1, 2, 3, 4, 5, 6]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).concat(ArrayTypeInstance.of([4, 5, 6])), ArrayTypeInstance.of([1, 2, 3, 4, 5, 6]));
 
 
 ArrayState.prototype.reduce = function (fNil) {
     return fCons =>
-        NativeArray.reduce(this.content)(fNil)(h => t => fCons(h)(of(t)));
+        NativeArray.reduce(this.content)(fNil)(h => t => fCons(h)(this.type.of(t)));
 };
-assumptionEqual(empty.reduce(() => ({}))(h => t => ({head: h, tail: t})), {});
-assumptionEqual(of([1, 2, 3]).reduce(() => ({}))(h => t => ({head: h, tail: t})), {head: 1, tail: of([2, 3])});
+assumptionEqual(ArrayTypeInstance.empty.reduce(() => ({}))(h => t => ({head: h, tail: t})), {});
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).reduce(() => ({}))(h => t => ({head: h, tail: t})), {head: 1, tail: ArrayTypeInstance.of([2, 3])});
 
 
 ArrayState.prototype.zipWith = function (f) {
-    return other => of(NativeArray.zipWith(f)(this.content)(other.content));
+    return other => this.type.of(NativeArray.zipWith(f)(this.content)(other.content));
 };
 
 
 ArrayState.prototype.zip = function (other) {
     return this.zipWith(Tuple)(other);
 };
-assumptionEqual(of(["a", "b", "c"]).zip(range(Int.of(1))(Int.of(10))), of([Tuple("a")(Int.of(1)), Tuple("b")(Int.of(2)), Tuple("c")(Int.of(3))]));
-assumptionEqual(of(["a", "b", "c"]).zip(empty), empty);
-assumptionEqual(empty.zip(range(Int.of(1))(Int.of(10))), empty);
+assumptionEqual(ArrayTypeInstance.of(["a", "b", "c"]).zip(ArrayTypeInstance.range(Int.of(1))(Int.of(10))), ArrayTypeInstance.of([Tuple("a")(Int.of(1)), Tuple("b")(Int.of(2)), Tuple("c")(Int.of(3))]));
+assumptionEqual(ArrayTypeInstance.of(["a", "b", "c"]).zip(ArrayTypeInstance.empty), ArrayTypeInstance.empty);
+assumptionEqual(ArrayTypeInstance.empty.zip(ArrayTypeInstance.range(Int.of(1))(Int.of(10))), ArrayTypeInstance.empty);
 
 
 ArrayState.prototype.join = function (separator) {
     return $String.of(NativeArray.join(this.map(x => x.show()).content)(separator.content));
 };
-assumptionEqual(empty.join($String.of(",")), $String.of(""));
-assumptionEqual(range(Int.of(1))(Int.of(5)).join($String.of(",")), $String.of("1,2,3,4"));
+assumptionEqual(ArrayTypeInstance.empty.join($String.of(",")), $String.of(""));
+assumptionEqual(ArrayTypeInstance.range(Int.of(1))(Int.of(5)).join($String.of(",")), $String.of("1,2,3,4"));
 
 
 //= Array a => filter :: (a -> Bool) -> Array a
 ArrayState.prototype.filter = function (predicate) {
-    return of(NativeArray.filter(predicate)(this.content));
+    return this.type.of(NativeArray.filter(predicate)(this.content));
 };
-assumptionEqual(range(Int.of(1))(Int.of(5)).filter(n => n.content % 2 === 0), of([2, 4]).map(Int.of));
+assumptionEqual(ArrayTypeInstance.range(Int.of(1))(Int.of(5)).filter(n => n.content % 2 === 0), ArrayTypeInstance.of([2, 4]).map(Int.of));
 
 
 //= Array a => sort :: Data.Ordered a => Array a
 ArrayState.prototype.sort = function () {
-    return of(NativeArray.sort(a => b => {
+    return this.type.of(NativeArray.sort(a => b => {
         const result = a.compare(b);
         if (result === Ordered.LT) {
             return -1;
@@ -178,12 +211,29 @@ ArrayState.prototype.sort = function () {
         }
     })(this.content));
 };
-assumptionEqual(range(Int.of(10))(Int.of(0)).sort(), range(Int.of(1))(Int.of(11)));
+assumptionEqual(ArrayTypeInstance.range(Int.of(10))(Int.of(0)).sort(), ArrayTypeInstance.range(Int.of(1))(Int.of(11)));
+
+
+ArrayState.prototype.unapplyNil = function () {
+    const contentLength = NativeArray.length(this.content);
+
+    return contentLength === 0
+        ? Maybe.Just([])
+        : Maybe.Nothing;
+};
+
+
+ArrayState.prototype.unapplyCons = function () {
+    const contentLength = NativeArray.length(this.content);
+
+    return contentLength === 0
+        ? Maybe.Nothing
+        : Maybe.Just([this.content[0], this.type.of(this.slice(1)(contentLength))]);
+};
+
 
 
 module.exports = {
-    empty,
-    of,
-    singleton,
-    range
+    Array: ArrayTypeInstance,
+    ArrayTypeInstance
 };
