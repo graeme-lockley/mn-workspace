@@ -1,6 +1,6 @@
 //- A list is a traditional Lisp Cons implementation
 //-
-//- data type List a = Nil | Cons a implements Sequence a, Visible a
+//- data type List a = Nil | Cons a implements Sequence a, Visible a where
 //-      ~Nil :: Maybe ()
 //-      ~Cons :: Maybe a * (Collection a)
 //-
