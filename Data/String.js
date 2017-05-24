@@ -8,7 +8,7 @@
 
 const Interfaces = require("./Interfaces");
 const Char = require("./Char").Char;
-const Int = mrequire("core:Data.Int:1.1.0");
+const Int = require("./Int").Int;
 const Ordered = require("./Ordered");
 const Sequence = require("./Sequence");
 const Visible = require("./Visible");
