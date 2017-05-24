@@ -127,21 +127,21 @@ assumptionEqual(ArrayTypeInstance.empty.prepend(0), ArrayTypeInstance.of([0]));
 
 ArrayState.prototype.slice = function (start) {
     return end =>
-        this.type.of(NativeArray.slice(this.content)(start)(end));
+        this.type.of(NativeArray.slice(this.content)(start.content)(end.content));
 };
-assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(1)(3), ArrayTypeInstance.of([2, 3]));
-assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(1)(2), ArrayTypeInstance.of([2]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(Int.of(1))(Int.of(3)), ArrayTypeInstance.of([2, 3]));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4, 5]).slice(Int.of(1))(Int.of(2)), ArrayTypeInstance.of([2]));
 
 
 ArrayState.prototype.at = function (index) {
-    return nativeMaybeToMaybe(NativeArray.at(this.content)(index));
+    return nativeMaybeToMaybe(NativeArray.at(this.content)(index.content));
 };
-assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(2), Maybe.Just(3));
-assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(5), Maybe.Nothing);
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(Int.of(2)), Maybe.Just(3));
+assumptionEqual(ArrayTypeInstance.of([1, 2, 3]).at(Int.of(5)), Maybe.Nothing);
 
 
 ArrayState.prototype.head = function () {
-    return this.at(0);
+    return this.at(Int.of(0));
 };
 assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).head(), Maybe.Just(1));
 assumptionEqual(ArrayTypeInstance.empty.head(), Maybe.Nothing);
@@ -150,7 +150,7 @@ assumptionEqual(ArrayTypeInstance.empty.head(), Maybe.Nothing);
 ArrayState.prototype.tail = function () {
     const contentLength = NativeArray.length(this.content);
 
-    return contentLength > 0 ? Maybe.Just(this.slice(1)(contentLength)) : Maybe.Nothing;
+    return contentLength > 0 ? Maybe.Just(this.slice(Int.of(1))(Int.of(contentLength))) : Maybe.Nothing;
 };
 assumptionEqual(ArrayTypeInstance.of([1, 2, 3, 4]).tail(), Maybe.Just(ArrayTypeInstance.of([2, 3, 4])));
 assumptionEqual(ArrayTypeInstance.of([1]).tail(), Maybe.Just(ArrayTypeInstance.empty));
@@ -228,9 +228,13 @@ ArrayState.prototype.unapplyCons = function () {
 
     return contentLength === 0
         ? Maybe.Nothing
-        : Maybe.Just([this.content[0], this.type.of(this.slice(1)(contentLength))]);
+        : Maybe.Just([this.content[0], this.slice(Int.of(1))(contentLength)]);
 };
 
+
+ArrayState.prototype.take = function(n) {
+    return this.slice(Int.of(0))(n);
+};
 
 
 module.exports = {

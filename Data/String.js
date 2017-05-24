@@ -103,6 +103,11 @@ $String.prototype.foldl = function (z) {
 };
 
 
+$String.prototype.take = function(n) {
+    return this.type.of(NativeString.substring(0)(n.content)(this.content));
+};
+
+
 module.exports = {
     String: $StringTypeInstance,
     StringType: $StringType

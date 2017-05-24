@@ -1,12 +1,13 @@
 //- A list is a traditional Lisp Cons implementation
 //-
-//- data type List a = Nil | Cons a implements Sequence a, Visible a where
+//- data type List a = Nil | Cons a (List a) implements Sequence a, Visible a where
 //-      ~Nil :: Maybe ()
 //-      ~Cons :: Maybe a * (Collection a)
 //-
 
 const Interfaces = require("./Interfaces");
 
+const Int = require("./Int").Int;
 const Maybe = require("./Maybe");
 const Parity = require("./Parity");
 const Sequence = require("./Sequence");
@@ -59,6 +60,13 @@ List.prototype.unapplyCons = function () {
     return this.content[0] === 0
         ? Maybe.Nothing
         : Maybe.Just([this.content[1], this.content[2]]);
+};
+
+
+List.prototype.take = function(n) {
+    return n.$LESS(Int.of(1))
+        ? this.type.Nil
+        : this.unapplyCons().reduce(() => this.type.Nil)(([h, t]) => this.type.Cons(h)(t.take(n.$MINUS(Int.of(1)))));
 };
 
 
