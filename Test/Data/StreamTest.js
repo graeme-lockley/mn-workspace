@@ -1,4 +1,3 @@
-const Assert = require("assert");
 const Generator = require("../Generator");
 const Unit = require("../Unit");
 
