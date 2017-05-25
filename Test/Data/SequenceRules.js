@@ -16,27 +16,13 @@ const toArray = x =>
     x.foldl([])(acc => i => NativeArray.append(acc)(i));
 
 
-const arrayEqual = x => y => {
-    if (x.length === y.length) {
-        for (let lp = 0; lp < x.length; lp += 1) {
-            if (x[lp].$NOT$EQUAL(y[lp])) {
-                return false;
-            }
-        }
-        return true;
-    } else {
-        return false;
-    }
-};
-
-
 const rules = gen => s => s
     .case("forall x: x.length() == length(x)", Generator.forall([gen], ([x]) => {
         Assert.deepEqual(x.length(), Int.of(length(x)));
     }))
     .case("forall x: forany y in 0 .. x.length() + 2: slice(0)(y) == x.take(y)", Generator.forall([gen], ([x]) => {
         const n = Generator.integerInRange(Int.of(0))(x.length().$PLUS(Int.of(2)));
-        Assert.equal(arrayEqual(NativeArray.slice(toArray(x))(0)(n))(toArray(x.take(Int.of(n)))), true);
+        Assert.deepEqual(NativeArray.slice(toArray(x))(0)(n), toArray(x.take(Int.of(n))));
     }))
     .case("forall x: forany y < 0: x.take(y) == []", Generator.forall([gen], ([x]) => {
         const n = Generator.integerInRange(Int.minBound)(Int.of(-1));
