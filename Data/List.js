@@ -1,9 +1,14 @@
 //- A list is a traditional Lisp Cons implementation
 //-
-//- data type List a = Nil | Cons a (List a) implements Sequence a, Visible a where
-//-      ~Nil :: Maybe ()
-//-      ~Cons :: Maybe a * (Collection a)
+//- ```haskell
+//- import Int from "core:Data.Int:1.0.0"
 //-
+//- data type List a = Nil | Cons a (List a) implements Sequence a, Visible a where
+//-     ~Nil :: Maybe ()
+//-     ~Cons :: Maybe a * This
+//-
+//-     take :: Int -> This
+//- ```
 
 const Interfaces = require("./Interfaces");
 
