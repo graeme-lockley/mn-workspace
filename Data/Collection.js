@@ -3,9 +3,9 @@
 //- ```haskell
 //- interface Collection a where
 //-      ~Nil :: Maybe ()
-//-      ~Cons :: Maybe a * (Collection a)
+//-      ~Cons :: Maybe a * (Self a)
 //-
-//-      reduce :: (() -> b) -> (a -> Collection a -> b) -> b
+//-      reduce :: (() -> b) -> (a -> Self a -> b) -> b
 //-      reduce fNil fCons = this match
 //-          | Nil => fNil ()
 //-          | Cons x xs => fCons x xs
@@ -13,9 +13,6 @@
 //-      foldl :: b -> (b -> a -> b) -> b
 //-      foldl z f =
 //-          reduce (constant z) (\x \xs -> xs.foldl (f z x) f)
-//-
-//-      size :: () -> Int
-//-      size () = foldl 0 (\a \_ -> a + 1)
 //- ```
 
 function CollectionType() {
