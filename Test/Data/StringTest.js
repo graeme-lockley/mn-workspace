@@ -52,14 +52,6 @@ Unit.suite("Data.String", s => s
             Maybe.Just([s.at(Int.of(0)).withDefault(Char.minBound), String.of(NativeString.substringFrom(1)(s.content))])
         );
     }))
-    .case("at", () => {
-        Assert.deepEqual(String.of("Hello").at(Int.of(0)), Char.ofNativeString("H"));
-        Assert.deepEqual(String.of("Hello").at(Int.of(-1)), Maybe.Nothing);
-    })
-    .case("length", () => {
-        Assert.deepEqual(String.of("").length(), Int.of(0));
-        Assert.deepEqual(String.of("Hello").length(), Int.of(5));
-    })
     .case("endsWith", () => {
         Assert.equal(String.of("Hello").endsWith(String.of("llo")), true);
         Assert.equal(String.of("Hello").endsWith(String.of("ll")), false);
