@@ -7,8 +7,10 @@
 //-     ~Nil :: Maybe ()
 //-     ~Cons :: Maybe a * This
 //-
-//-     take :: Int -> This
+//-     take :: Int -> List a
 //-     map :: (a -> b) -> Sequence b
+//-
+//-     startsWith :: List b -> Bool
 //- ```
 
 const Interfaces = require("./Interfaces");
