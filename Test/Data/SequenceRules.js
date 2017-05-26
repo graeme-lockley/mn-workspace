@@ -37,6 +37,9 @@ const rules = gen => s => s
             Assert.deepEqual(x.at(n), Maybe.Nothing);
         }
     }))
+    .case("forall x: x.map(\i -> i.show()) == toArray(x).map(\i -> i.show())", Generator.forall([gen], ([x]) => {
+        Assert.deepEqual(toArray(x.map(i => i.show())), toArray(x).map(i => i.show()));
+    }))
 ;
 
 module.exports = rules;

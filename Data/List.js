@@ -8,6 +8,7 @@
 //-     ~Cons :: Maybe a * This
 //-
 //-     take :: Int -> This
+//-     map :: (a -> b) -> Sequence b
 //- ```
 
 const Interfaces = require("./Interfaces");
@@ -72,6 +73,11 @@ List.prototype.take = function(n) {
     return n.$LESS(Int.of(1))
         ? this.type.Nil
         : this.unapplyCons().reduce(() => this.type.Nil)(([h, t]) => this.type.Cons(h)(t.take(n.$MINUS(Int.of(1)))));
+};
+
+
+List.prototype.map = function(f) {
+    return this.unapplyCons().reduce(() => this.type.Nil)(([h, t]) => this.type.Cons(f(h))(t.map(f)));
 };
 
 

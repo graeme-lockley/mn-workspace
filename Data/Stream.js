@@ -1,9 +1,15 @@
 //- A stream is a (potentially) infinitely long sequence.
 //-
-//- data type Stream a = Nil | Cons a (() -> Stream a)  implements Sequence a, Visible a where
-//-      ~Nil :: Maybe ()
-//-      ~Cons :: Maybe a * (Collection a)
+//- ```haskell
+//- import Int from "core:Data.Int:1.0.0"
 //-
+//- data type Stream a = Nil | Cons a (() -> Stream a)  implements Sequence a, Visible a where
+//-     ~Nil :: Maybe ()
+//-     ~Cons :: Maybe a * (Collection a)
+//-
+//-     take :: Int -> This b
+//-     map :: (a -> b) -> Sequence b
+//- ```
 
 const Interfaces = require("./Interfaces");
 
@@ -63,6 +69,11 @@ Stream.prototype.take = function(n) {
     return n.$LESS(Int.of(1))
         ? this.type.Nil
         : this.unapplyCons().reduce(() => this.type.Nil)(([h, t]) => this.type.Cons(h)(() => t.take(n.$MINUS(Int.of(1)))));
+};
+
+
+Stream.prototype.map = function(f) {
+    return this.unapplyCons().reduce(() => this.type.Nil)(([h, t]) => this.type.Cons(f(h))(() => t.map(f)));
 };
 
 

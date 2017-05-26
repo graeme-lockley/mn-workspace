@@ -2,18 +2,22 @@
 //-
 //- import Int from "core:Data.Int:1.0.0"
 //-
+//- ```haskell
 //- type String extends NativeString implements Sequence Char, Ordered, Visible
-//-      at :: Int -> Maybe String
-//-      foldl :: b -> (b -> a -> b) -> b
+//-     at :: Int -> Maybe String
+//-     foldl :: b -> (b -> a -> b) -> b
+//-     map :: (a -> b) -> Sequence b
+//- ```
 
 const Interfaces = require("./Interfaces");
+
+const Array = require("./Array").Array;
 const Char = require("./Char").Char;
 const Int = require("./Int").Int;
+const Maybe = require("./Maybe");
 const Ordered = require("./Ordered");
 const Sequence = require("./Sequence");
 const Visible = require("./Visible");
-
-const Maybe = require("./Maybe");
 
 const NativeString = require("../Native/Data/String");
 
@@ -105,6 +109,16 @@ $String.prototype.foldl = function (z) {
 
 $String.prototype.take = function(n) {
     return this.type.of(NativeString.substring(0)(n.content)(this.content));
+};
+
+
+$String.prototype.asArray = function() {
+    return this.foldl(Array.empty)(acc => i => acc.append(i));
+};
+
+
+$String.prototype.map = function(f) {
+    return this.asArray().map(f);
 };
 
 
