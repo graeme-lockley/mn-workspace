@@ -40,6 +40,11 @@ const rules = gen => s => s
     .case("forall x: x.map(\i -> i.show()) == toArray(x).map(\i -> i.show())", Generator.forall([gen], ([x]) => {
         Assert.deepEqual(toArray(x.map(i => i.show())), toArray(x).map(i => i.show()));
     }))
+    .case("forall x: forany n in 0 .. x.length()-1: x.startsWith(x.take(n)", Generator.forall([gen], ([x]) => {
+        const n = Int.of(Generator.integerInRange(Int.of(0))(x.length().$MINUS(Int.of(1))));
+
+        Assert.equal(x.startsWith(x.take(n)), true);
+    }))
 ;
 
 module.exports = rules;

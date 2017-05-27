@@ -3,10 +3,15 @@
 //- import Int from "core:Data.Int:1.0.0"
 //-
 //- ```haskell
+//- import Maybe from "core:Data.Maybe:1.0.0"
+//- import String from "core:Data.String:1.0.0"
+//-
 //- type String extends NativeString implements Sequence Char, Ordered, Visible
 //-     at :: Int -> Maybe String
 //-     foldl :: b -> (b -> a -> b) -> b
 //-     map :: (a -> b) -> Sequence b
+//-     take :: Int -> Self a
+//-     startsWith :: Self a -> Bool
 //- ```
 
 const Interfaces = require("./Interfaces");

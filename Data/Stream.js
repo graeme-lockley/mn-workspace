@@ -5,10 +5,11 @@
 //-
 //- data type Stream a = Nil | Cons a (() -> Stream a)  implements Sequence a, Visible a where
 //-     ~Nil :: Maybe ()
-//-     ~Cons :: Maybe a * (Collection a)
+//-     ~Cons :: Maybe a * (Self a)
 //-
-//-     take :: Int -> This b
+//-     take :: Int -> Self a
 //-     map :: (a -> b) -> Sequence b
+//-     startWith :: Self a -> Bool
 //- ```
 
 const Interfaces = require("./Interfaces");

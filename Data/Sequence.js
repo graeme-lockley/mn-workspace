@@ -4,12 +4,16 @@
 //- import Collection from "core:Data.Collection:1.0.0"
 //- import Maybe from "core:Data.Maybe:1.0.0"
 //-
+//- ```haskell
 //- interface Sequence a extends Collection a where
 //-     map :: (a -> b) -> Sequence b
 //-     length :: () -> Int
 //-
-//-     take :: Int -> Sequence a
+//-     take :: Int -> Self a
 //-     at :: Int -> Maybe a
+//-     startsWith :: Self a -> Bool
+//-     indexOf :: Self a -> Maybe Int
+//- ```
 
 const Int = require("./Int").Int;
 const Interfaces = require("./Interfaces");
@@ -87,6 +91,35 @@ SequenceType.prototype.at = function(n) {
         index = index.$MINUS(index.type.identity);
     }
     return current.unapplyCons().reduce(() => Maybe.Nothing)(([h, t]) => Maybe.Just(h));
+};
+
+
+SequenceType.prototype.isEmpty = function() {
+    return this.unapplyNil().isJust();
+};
+
+
+SequenceType.prototype.startsWith = function(other) {
+    let thisCurrent = this;
+    let otherCurrent = other;
+
+    while (true) {
+        if (otherCurrent.isEmpty()) {
+            return true;
+        } else if (thisCurrent.isEmpty()) {
+            return false;
+        } else {
+            const thisUncons = thisCurrent.unapplyCons().withDefault();
+            const otherUncons = otherCurrent.unapplyCons().withDefault();
+
+            if (thisUncons[0].$EQUAL$EQUAL(otherUncons[0])) {
+                thisCurrent = thisUncons[1];
+                otherCurrent = otherUncons[1];
+            } else {
+                return false;
+            }
+        }
+    }
 };
 
 
