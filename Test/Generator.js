@@ -1,4 +1,5 @@
-const integerInRange = min => max => Math.round(Math.random() * (max.content - min.content) + min.content);
+const integerInRange = min => max =>
+    Math.round(Math.random() * (max.content - min.content) + min.content);
 
 
 const forall = (gens, action) => () => {
