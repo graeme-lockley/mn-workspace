@@ -17,7 +17,7 @@ RandomType.prototype.asNativeInt = function() {
 };
 
 
-RandomType.prototype.asFloat = function () {
+RandomType.prototype.asNativeFloat = function () {
     return (this.content - 1) / 2147483646;
 };
 
